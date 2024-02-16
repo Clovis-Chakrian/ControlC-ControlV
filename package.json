@@ -1,0 +1,29 @@
+{
+  "name": "ctrlC-ctrlV",
+  "version": "1.0.0",
+  "main": "main.js",
+  "author": "Clóvis Chakrian <clovischakriandev@gmail.com>",
+  "license": "MIT",
+  "iohook": {
+    "targets": [
+      "node-108",
+      "electron-116"
+    ],
+    "platforms": [
+      "win32",
+      "darwin",
+      "linux"
+    ],
+    "arches": [
+      "x64"
+    ]
+  },
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "@mechakeys/iohook": "^1.1.1",
+    "electron": "25.0.0",
+    "keypress": "^0.2.1"
+  }
+}
