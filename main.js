@@ -1,31 +1,47 @@
-const { app, Menu, MenuItem, Tray, globalShortcut, clipboard, ipcMain, BrowserWindow } = require('electron');
+const { app, Menu, MenuItem, Tray } = require('electron');
 const iohook = require('@mechakeys/iohook');
 
-app.whenReady().then(() => {
-  const tray = new Tray('./img.png');
-  const contextMenuHeader = [
-    { label: 'Itens no clipboard', type: 'normal' },
-    { type: 'separator' },
-  ];
+const contextMenuHeader = [
+  { label: 'Itens no clipboard', type: 'normal' },
+  { type: 'separator' },
+];
 
-  const clipboardDataMenu = [];
+const clipboardDataMenu = [];
+
+app.whenReady().then(() => {
+  let menu = Menu.buildFromTemplate([...contextMenuHeader, ...clipboardDataMenu]);
+  const tray = new Tray('./clipboards.png');
 
   tray.setToolTip('This is my application.');
-  tray.setContextMenu(Menu.buildFromTemplate([...contextMenuHeader, ...clipboardDataMenu]));
+  tray.setContextMenu(menu);
 
-  function updateClipboard() {
-    if (clipboardDataMenu.length >= 5) clipboardDataMenu.shift();
-    clipboardDataMenu.push({ label: clipboard.readText('clipboard'), type: 'normal' });
-    tray.setContextMenu(Menu.buildFromTemplate([...contextMenuHeader, ...clipboardDataMenu]));
-  }
-
-  iohook.on("keydown", (key) => {
+  iohook.on("keyup", (key) => {
     const cKeycode = 46;
 
     if (key.keycode == cKeycode && key.ctrlKey) {
-      setTimeout(updateClipboard, 200);
+      updateClipboard()
     }
   });
+
+  function retrieveClipboarContent(info) {
+    clipboard.writeText(info, 'clipboard');
+  }
+
+  function updateClipboard() {
+    if (clipboardDataMenu.length >= 5) clipboardDataMenu.shift();
+    const clipboardData = clipboard.readText('clipboard');
+    clipboardDataMenu.push(new MenuItem({
+      label: clipboardData,
+      type: 'normal',
+      click: () => {
+        retrieveClipboarContent(clipboardData);
+      },
+    }));
+
+    menu = Menu.buildFromTemplate([...contextMenuHeader, ...clipboardDataMenu]);
+
+    tray.setContextMenu(menu);
+  };
 
   iohook.start();
 });
