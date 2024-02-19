@@ -1,4 +1,5 @@
-const { app, Menu, MenuItem, Tray } = require('electron');
+const { app, Menu, MenuItem, Tray, nativeImage, clipboard } = require('electron');
+const path = require('path');
 const iohook = require('@mechakeys/iohook');
 
 const contextMenuHeader = [
@@ -8,9 +9,17 @@ const contextMenuHeader = [
 
 const clipboardDataMenu = [];
 
+const contextMenuFooter = [
+  { type: 'separator' },
+  { label: 'Quit', type: 'normal', click: () => {
+    app.quit();
+  } },
+];
+
 app.whenReady().then(() => {
-  let menu = Menu.buildFromTemplate([...contextMenuHeader, ...clipboardDataMenu]);
-  const tray = new Tray('./clipboards.png');
+  const icon = nativeImage.createFromPath(path.join(__dirname, "clipboards.png"));
+  let menu = Menu.buildFromTemplate([...contextMenuHeader, ...clipboardDataMenu, ...contextMenuFooter]);
+  const tray = new Tray(icon);
 
   tray.setToolTip('This is my application.');
   tray.setContextMenu(menu);
@@ -38,7 +47,9 @@ app.whenReady().then(() => {
       },
     }));
 
-    menu = Menu.buildFromTemplate([...contextMenuHeader, ...clipboardDataMenu]);
+    menu = Menu.buildFromTemplate([...contextMenuHeader, ...clipboardDataMenu, ...contextMenuFooter]);
+
+    console.log(clipboardDataMenu);
 
     tray.setContextMenu(menu);
   };

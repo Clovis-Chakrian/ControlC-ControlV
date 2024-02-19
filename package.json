@@ -1,9 +1,23 @@
 {
   "name": "ctrlC-ctrlV",
-  "version": "1.0.0",
+  "description": "Your clipboard manager",
+  "version": "1.0.3",
   "main": "main.js",
   "author": "Clóvis Chakrian <clovischakriandev@gmail.com>",
   "license": "MIT",
+  "config": {
+    "forge": {
+      "makers": [
+        {
+          "name": "@electron-forge/maker-deb",
+          "platforms": [
+            "linux"
+          ],
+          "config": {}
+        }
+      ]
+    }
+  },
   "iohook": {
     "targets": [
       "node-108",
@@ -22,8 +36,11 @@
     "start": "electron ."
   },
   "dependencies": {
-    "@mechakeys/iohook": "^1.1.1",
-    "electron": "25.0.0",
-    "keypress": "^0.2.1"
+    "@mechakeys/iohook": "^1.1.1"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.2.0",
+    "@electron-forge/maker-deb": "^7.2.0",
+    "electron": "25.0.0"
   }
 }
